@@ -1,0 +1,11 @@
+package com.chubb.FlightBookingSystem.exceptions;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.CONFLICT)
+public class UserAlreadyExistsException extends RuntimeException{
+	public UserAlreadyExistsException(String emailId) {
+		super("User with email id " +emailId+ " already exists");
+	}
+}
