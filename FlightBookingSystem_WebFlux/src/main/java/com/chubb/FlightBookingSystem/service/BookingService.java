@@ -1,5 +1,6 @@
 package com.chubb.FlightBookingSystem.service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.chubb.FlightBookingSystem.dto.BookingRequestDTO;
 import com.chubb.FlightBookingSystem.dto.TicketRequestDTO;
+import com.chubb.FlightBookingSystem.exceptions.BookingNotFoundException;
 import com.chubb.FlightBookingSystem.exceptions.ScheduleNotFoundException;
 import com.chubb.FlightBookingSystem.exceptions.SeatNotAvailableException;
 import com.chubb.FlightBookingSystem.model.Booking;
@@ -20,6 +22,7 @@ import com.chubb.FlightBookingSystem.repository.TicketRepository;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Service
 @Slf4j
@@ -175,5 +178,49 @@ public class BookingService {
                 	    });
             });
 	}
+	
 
+	public Mono<Void> cancelBooking(String pnr) {
+	    Mono<Booking> bookingMono = bookingRepository.findByPnr(pnr)
+	        .switchIfEmpty(Mono.error(() -> new BookingNotFoundException(pnr)));
+
+	    return bookingMono.<Booking>flatMap(booking -> 
+	        ticketRepository.findByBooking_Id(booking.getId())
+	            .flatMap(ticket -> 
+	                Mono.zip(
+	                    Mono.just(ticket),
+	                    scheduleRepository.findById(ticket.getScheduleId())
+	                )
+	            )
+	            .flatMap(tuple -> {
+	                Ticket ticket = tuple.getT1();
+	                Schedule schedule = tuple.getT2();
+
+	                if (schedule.getDepartureDate().isBefore(LocalDate.now().plusDays(1))) {
+	                    return Mono.<Tuple2<Ticket, Schedule>>error(new RuntimeException(
+	                        "Cannot cancel ticket " + ticket.getSeatNumber() +
+	                        " for schedule " + schedule.getId() +
+	                        ". Cancellation allowed only 24+ hours before departure."
+	                    ));
+	                }
+	                return Mono.just(tuple);
+	            })
+	            .concatMap(tuple -> {
+	                Ticket ticket = tuple.getT1();
+	                Schedule schedule = tuple.getT2();
+	             
+	                ticket.setStatus(Ticket.TicketStatus.CANCELLED);
+	                schedule.setAvailableSeats(schedule.getAvailableSeats() + 1);
+	                schedule.getBookedSeats().remove(ticket.getSeatNumber());
+
+	                return ticketRepository.save(ticket)
+	                    .then(scheduleRepository.save(schedule));
+	            })
+	            .then(
+	                Mono.just(booking)
+	                    .doOnNext(b -> b.setTotalAmount(0))
+	                    .flatMap(bookingRepository::save)
+	            )
+	    ).then();
+	}
 }

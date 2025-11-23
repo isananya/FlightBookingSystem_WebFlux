@@ -50,7 +50,7 @@ public class TicketService {
 
         return bookingRepository.findByPnr(pnr)
             .switchIfEmpty(Mono.error(new BookingNotFoundException(pnr)))
-            .flatMap(booking -> 
+            .flatMapMany(booking -> 
                 ticketRepository.findByBooking_Id(booking.getId())
             )
             .flatMap(ticket ->

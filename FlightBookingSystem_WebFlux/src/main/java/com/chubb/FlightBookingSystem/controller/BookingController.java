@@ -3,6 +3,7 @@ package com.chubb.FlightBookingSystem.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,5 +39,14 @@ public class BookingController {
     @GetMapping("/history/{email}")
     public Flux<TicketResponseDTO> getTicketsByEmail(@PathVariable String email) {
         return ticketService.getTicketsByEmail(email);
+    }
+    
+    @DeleteMapping("/cancel/{pnr}")
+    public Mono<ResponseEntity<Object>> cancelBooking(@PathVariable String pnr) {
+        return bookingService.cancelBooking(pnr)
+            .then(Mono.just(ResponseEntity.ok().build()))
+            .onErrorResume(ex ->
+                Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())
+            );
     }
 }

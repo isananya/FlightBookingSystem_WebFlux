@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class BookingNotFoundException extends RuntimeException {
     public BookingNotFoundException(String pnr) {
-        super("Booking not found with PNR : " + pnr);
+        super("Booking not found with " + pnr);
     }
 }
