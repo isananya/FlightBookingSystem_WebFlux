@@ -1,0 +1,59 @@
+package com.chubb.FlightBookingSystem.service;
+
+import java.util.List;
+import java.util.HashSet;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.chubb.FlightBookingSystem.dto.TicketResponseDTO;
+import com.chubb.FlightBookingSystem.exceptions.BookingNotFoundException;
+import com.chubb.FlightBookingSystem.model.Booking;
+import com.chubb.FlightBookingSystem.model.Schedule;
+import com.chubb.FlightBookingSystem.model.Ticket;
+import com.chubb.FlightBookingSystem.repository.BookingRepository;
+import com.chubb.FlightBookingSystem.repository.ScheduleRepository;
+import com.chubb.FlightBookingSystem.repository.TicketRepository;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@Service
+public class TicketService {
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+    
+    private TicketResponseDTO mapToResponse(Ticket t, Schedule schedule) {
+        return new TicketResponseDTO(
+            t.getFirstName(),
+            t.getLastName(),
+            t.getAge(),
+            t.getGender(),
+            t.getSeatNumber(),
+            t.getMealOption(),
+            t.getStatus(),
+            schedule.getDepartureDate(),
+            schedule.getFlight().getSourceAirport(),
+            schedule.getFlight().getDestinationAirport(),
+            schedule.getFlight().getDepartureTime(),
+            schedule.getFlight().getArrivalTime()
+        );
+    }
+    
+    public Mono<List<TicketResponseDTO>> getTicketsByPnr(String pnr) {
+        return bookingRepository.findByPnr(pnr)
+            .switchIfEmpty(Mono.error(new BookingNotFoundException(pnr)))
+            .flatMap(booking ->
+                ticketRepository.findByBooking_Id(booking.getId())
+                    .flatMap(t -> scheduleRepository.findById(t.getScheduleId())
+                            .map(schedule -> mapToResponse(t, schedule))).collectList()
+            );
+    }
+}
