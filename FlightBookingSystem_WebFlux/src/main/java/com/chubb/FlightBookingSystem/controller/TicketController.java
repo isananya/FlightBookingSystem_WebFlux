@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.chubb.FlightBookingSystem.dto.TicketResponseDTO;
 import com.chubb.FlightBookingSystem.service.TicketService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -20,7 +21,8 @@ public class TicketController {
     private TicketService ticketService;
 
     @GetMapping("/ticket/{pnr}")
-    public Mono<ResponseEntity<List<TicketResponseDTO>>> getTicketsByPnr(@PathVariable String pnr) {
-        return ticketService.getTicketsByPnr(pnr).map(ResponseEntity::ok);
+    public Flux<TicketResponseDTO> getTickets(@PathVariable String pnr) {
+        return ticketService.getTicketsByPnr(pnr);
     }
+
 }

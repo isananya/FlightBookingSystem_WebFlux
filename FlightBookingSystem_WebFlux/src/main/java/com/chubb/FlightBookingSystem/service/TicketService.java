@@ -1,7 +1,6 @@
 package com.chubb.FlightBookingSystem.service;
 
 import java.util.List;
-import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class TicketService {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
-    
+
     private TicketResponseDTO mapToResponse(Ticket t, Schedule schedule) {
         return new TicketResponseDTO(
             t.getFirstName(),
@@ -46,14 +45,30 @@ public class TicketService {
             schedule.getFlight().getArrivalTime()
         );
     }
-    
-    public Mono<List<TicketResponseDTO>> getTicketsByPnr(String pnr) {
+
+    public Flux<TicketResponseDTO> getTicketsByPnr(String pnr) {
+
         return bookingRepository.findByPnr(pnr)
             .switchIfEmpty(Mono.error(new BookingNotFoundException(pnr)))
-            .flatMap(booking ->
+            .flatMap(booking -> 
                 ticketRepository.findByBooking_Id(booking.getId())
-                    .flatMap(t -> scheduleRepository.findById(t.getScheduleId())
-                            .map(schedule -> mapToResponse(t, schedule))).collectList()
+            )
+            .flatMap(ticket ->
+                scheduleRepository.findById(ticket.getScheduleId())
+                    .map(schedule -> mapToResponse(ticket, schedule))
+            );
+    }
+
+    public Flux<TicketResponseDTO> getTicketsByEmail(String emailId) {
+
+        return bookingRepository.findByEmailId(emailId)
+            .switchIfEmpty(Mono.error(new BookingNotFoundException(emailId)))
+            .flatMap(booking ->
+                ticketRepository.findByBooking_Id(booking.getId()) 
+            )
+            .flatMap(ticket ->
+                scheduleRepository.findById(ticket.getScheduleId())       
+                    .map(schedule -> mapToResponse(ticket, schedule))
             );
     }
 }
