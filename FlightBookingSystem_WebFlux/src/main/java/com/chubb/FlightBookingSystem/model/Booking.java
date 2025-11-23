@@ -17,9 +17,9 @@ public class Booking {
 
     private boolean roundTrip;
 
-    private int departureScheduleId;
+    private String departureScheduleId;
 
-    private Integer returnScheduleId = null;
+    private String returnScheduleId;
 
     private double totalAmount;
 
@@ -33,15 +33,18 @@ public class Booking {
         super();
     }
 
-    public Booking(boolean roundTrip, int departureScheduleId, Integer returnScheduleId,
-                   double totalAmount, @Email String emailId, @Min(1) int passengerCount) {
-        super();
+    public Booking(boolean roundTrip,
+                   String departureScheduleId,
+                   String returnScheduleId,
+                   double totalAmount,
+                   String emailId,
+                   int passengerCount) {
         this.pnr = RandomStringUtils.randomAlphanumeric(6);
         this.roundTrip = roundTrip;
         this.departureScheduleId = departureScheduleId;
         this.returnScheduleId = returnScheduleId;
         this.totalAmount = totalAmount;
-       	this.emailId = emailId;
+        this.emailId = emailId;
         this.passengerCount = passengerCount;
     }
 
@@ -69,19 +72,19 @@ public class Booking {
         this.roundTrip = roundTrip;
     }
 
-    public int getDepartureScheduleId() {
+    public String getDepartureScheduleId() {
         return departureScheduleId;
     }
 
-    public void setDepartureScheduleId(int departureScheduleId) {
+    public void setDepartureScheduleId(String departureScheduleId) {
         this.departureScheduleId = departureScheduleId;
     }
 
-    public Integer getReturnScheduleId() {
+    public String getReturnScheduleId() {
         return returnScheduleId;
     }
 
-    public void setReturnScheduleId(Integer returnScheduleId) {
+    public void setReturnScheduleId(String returnScheduleId) {
         this.returnScheduleId = returnScheduleId;
     }
 

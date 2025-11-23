@@ -35,10 +35,16 @@ public interface ScheduleRepository extends ReactiveMongoRepository<Schedule, St
         }
         """)
     Flux<Schedule> searchFlights(
-            String source,
-            String destination,
-            LocalDate startDate,
-            LocalDate endDate,
-            int passengerCount
+        String source,
+        String destination,
+        LocalDate startDate,
+        LocalDate endDate,
+        int passengerCount
+    );
+
+    @Query(value = "{ 'id' : ?0, 'bookedSeats' : ?1 }", exists = true)
+    Mono<Boolean> existsSeatBooked(
+		String scheduleId, 
+		String seatNumber
     );
 }

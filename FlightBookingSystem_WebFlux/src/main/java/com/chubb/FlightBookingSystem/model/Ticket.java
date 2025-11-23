@@ -29,7 +29,7 @@ public class Ticket {
 
     private TicketStatus status = TicketStatus.CONFIRMED;
 
-    private int scheduleId;
+    private String scheduleId;
 
     @DBRef
     private Booking booking;
@@ -55,7 +55,7 @@ public class Ticket {
     }
 
     public Ticket(@NotBlank String firstName, String lastName, @Min(0) int age, Gender gender,
-                  String seatNumber, MealOption mealOption, int scheduleId, Booking booking) {
+                  String seatNumber, MealOption mealOption, String scheduleId, Booking booking) {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -131,11 +131,11 @@ public class Ticket {
         this.status = status;
     }
 
-    public int getScheduleId() {
+    public String getScheduleId() {
         return scheduleId;
     }
 
-    public void setScheduleId(int scheduleId) {
+    public void setScheduleId(String scheduleId) {
         this.scheduleId = scheduleId;
     }
 
