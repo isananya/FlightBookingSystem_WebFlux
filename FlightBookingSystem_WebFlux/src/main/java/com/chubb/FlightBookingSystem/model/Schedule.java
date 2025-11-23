@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.chubb.FlightBookingSystem.dto.ScheduleRequestDTO;
 
@@ -20,7 +21,7 @@ public class Schedule {
 
     @NotBlank
     private String airlineName;
-
+    
     private LocalDate departureDate;
 
     private float basePrice;
@@ -33,7 +34,7 @@ public class Schedule {
 
     private FlightStatus flightStatus = FlightStatus.SCHEDULED;
 
-    @DBRef
+    @Field("flight")
     private Flight flight;
 
     public enum FlightStatus {
