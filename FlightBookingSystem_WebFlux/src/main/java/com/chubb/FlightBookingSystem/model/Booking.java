@@ -1,13 +1,22 @@
 package com.chubb.FlightBookingSystem.model;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.chubb.FlightBookingSystem.model.Schedule.FlightStatus;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Document(collection = "bookings")
+@Data
+@NoArgsConstructor
 public class Booking {
 
     @Id
@@ -29,10 +38,6 @@ public class Booking {
     @Min(value = 1)
     private int passengerCount;
 
-    public Booking() {
-        super();
-    }
-
     public Booking(boolean roundTrip,
                    String departureScheduleId,
                    String returnScheduleId,
@@ -45,70 +50,6 @@ public class Booking {
         this.returnScheduleId = returnScheduleId;
         this.totalAmount = totalAmount;
         this.emailId = emailId;
-        this.passengerCount = passengerCount;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPnr() {
-        return pnr;
-    }
-
-    public void setPnr(String pnr) {
-        this.pnr = pnr;
-    }
-
-    public boolean isRoundTrip() {
-        return roundTrip;
-    }
-
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
-    }
-
-    public String getDepartureScheduleId() {
-        return departureScheduleId;
-    }
-
-    public void setDepartureScheduleId(String departureScheduleId) {
-        this.departureScheduleId = departureScheduleId;
-    }
-
-    public String getReturnScheduleId() {
-        return returnScheduleId;
-    }
-
-    public void setReturnScheduleId(String returnScheduleId) {
-        this.returnScheduleId = returnScheduleId;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public int getPassengerCount() {
-        return passengerCount;
-    }
-
-    public void setPassengerCount(int passengerCount) {
         this.passengerCount = passengerCount;
     }
 }
