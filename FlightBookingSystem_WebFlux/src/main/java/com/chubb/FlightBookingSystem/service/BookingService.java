@@ -28,14 +28,16 @@ import reactor.util.function.Tuple2;
 @Slf4j
 public class BookingService {
 
+	private final BookingRepository bookingRepository;
+	private final TicketRepository ticketRepository;
+	private final ScheduleRepository scheduleRepository;
+	
 	@Autowired
-	private BookingRepository bookingRepository;
-
-	@Autowired
-	private TicketRepository ticketRepository;
-
-	@Autowired
-	private ScheduleRepository scheduleRepository;
+	public BookingService(BookingRepository bookingRepository, TicketRepository ticketRepository,ScheduleRepository scheduleRepository) {
+		this.bookingRepository = bookingRepository;
+		this.ticketRepository = ticketRepository;
+		this.scheduleRepository = scheduleRepository;
+	}
 
 	private Mono<Float> calculateTotalPrice(BookingRequestDTO request) {
 

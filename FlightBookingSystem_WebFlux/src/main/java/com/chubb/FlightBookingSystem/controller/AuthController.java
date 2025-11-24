@@ -12,10 +12,13 @@ import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
 
 @RestController
-public class AuthController {
-
+public class AuthController{
+    private final UserService userService;
+    
     @Autowired
-    private UserService userService;
+    public AuthController(UserService userService) {
+    	this.userService=userService;
+    }
 
     @PostMapping("/signup")
     public Mono<User> saveUser(@RequestBody @Valid User user) {

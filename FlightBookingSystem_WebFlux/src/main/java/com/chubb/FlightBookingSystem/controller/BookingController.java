@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chubb.FlightBookingSystem.dto.BookingRequestDTO;
 import com.chubb.FlightBookingSystem.dto.TicketResponseDTO;
+import com.chubb.FlightBookingSystem.exceptions.ScheduleNotFoundException;
+import com.chubb.FlightBookingSystem.exceptions.SeatNotAvailableException;
 import com.chubb.FlightBookingSystem.service.BookingService;
 import com.chubb.FlightBookingSystem.service.TicketService;
 
@@ -24,13 +26,16 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/booking")
 public class BookingController {
 
-    @Autowired
-    BookingService bookingService;
+    private final BookingService bookingService;
+    private final TicketService ticketService;
     
     @Autowired
-    TicketService ticketService;
+    public BookingController(BookingService bookingService, TicketService ticketService) {
+		this.bookingService = bookingService;
+		this.ticketService = ticketService;
+	}
 
-    @PostMapping
+	@PostMapping
     public Mono<ResponseEntity<String>> saveBooking(@RequestBody @Valid BookingRequestDTO request) {
         return bookingService.addBooking(request)
         		.map(pnr -> ResponseEntity.status(HttpStatus.CREATED).body("Booking Successful! PNR : " + pnr));

@@ -19,15 +19,19 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/airline")
 public class ScheduleController {
 
+    private final ScheduleService scheduleService;
+    private final FlightService flightService;
+
+    private final String adminSecretKey;
+    
     @Autowired
-    private ScheduleService scheduleService;
+    public ScheduleController(ScheduleService scheduleService, FlightService flightService) {
+		this.scheduleService = scheduleService;
+		this.flightService = flightService;
+		this.adminSecretKey = "Admin";
+	}
 
-    @Autowired
-    private FlightService flightService;
-
-    private final String adminSecretKey = "Admin";
-
-    @PostMapping("/inventory/add")
+	@PostMapping("/inventory/add")
     public Mono<ResponseEntity<String>> saveSchedule(
             @RequestHeader(value = "Admin_key", required = false) String adminKey,
             @RequestBody @Valid ScheduleRequestDTO scheduleDto) {

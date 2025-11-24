@@ -12,10 +12,14 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/flights")
 public class FlightSearchController {
 
-    @Autowired
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
-    @PostMapping("/search")
+    @Autowired
+    public FlightSearchController(ScheduleService scheduleService) {
+		this.scheduleService = scheduleService;
+	}
+
+	@PostMapping("/search")
     public Mono<ResponseEntity<?>> searchFlights(@RequestBody FlightSearchRequestDTO request) {
         if (request.getSourceAirport() == null ||
             request.getDestinationAirport() == null ||

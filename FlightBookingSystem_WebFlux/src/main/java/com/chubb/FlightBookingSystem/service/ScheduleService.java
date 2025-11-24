@@ -24,13 +24,16 @@ import reactor.core.publisher.Mono;
 @Service
 public class ScheduleService {
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final FlightRepository flightRepository;
 
     @Autowired
-    private FlightRepository flightRepository;
+    public ScheduleService(ScheduleRepository scheduleRepository, FlightRepository flightRepository) {
+		this.scheduleRepository = scheduleRepository;
+		this.flightRepository = flightRepository;
+	}
 
-    public Mono<String> addSchedule(ScheduleRequestDTO dto) {
+	public Mono<String> addSchedule(ScheduleRequestDTO dto) {
 
         String flightNumber = dto.getFlightNumber();
 

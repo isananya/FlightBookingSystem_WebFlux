@@ -12,10 +12,14 @@ import reactor.core.publisher.Mono;
 @Service
 public class FlightService {
 
-    @Autowired
     private FlightRepository flightRepository;
+    
+    @Autowired
+    public FlightService(FlightRepository flightRepository) {
+		this.flightRepository = flightRepository;
+	}
 
-    public Mono<String> addFlight(Flight flight) {
+	public Mono<String> addFlight(Flight flight) {
         return flightRepository
         		.existsByFlightNumber(flight.getFlightNumber())
                 .flatMap(exists -> {

@@ -20,16 +20,19 @@ import reactor.core.publisher.Mono;
 @Service
 public class TicketService {
 
+    private final BookingRepository bookingRepository;
+    private final TicketRepository ticketRepository;
+    private final ScheduleRepository scheduleRepository;
+    
     @Autowired
-    private BookingRepository bookingRepository;
+    public TicketService(BookingRepository bookingRepository, TicketRepository ticketRepository,
+			ScheduleRepository scheduleRepository) {
+		this.bookingRepository = bookingRepository;
+		this.ticketRepository = ticketRepository;
+		this.scheduleRepository = scheduleRepository;
+	}
 
-    @Autowired
-    private TicketRepository ticketRepository;
-
-    @Autowired
-    private ScheduleRepository scheduleRepository;
-
-    private TicketResponseDTO mapToResponse(Ticket t, Schedule schedule) {
+	private TicketResponseDTO mapToResponse(Ticket t, Schedule schedule) {
         return new TicketResponseDTO(
             t.getFirstName(),
             t.getLastName(),

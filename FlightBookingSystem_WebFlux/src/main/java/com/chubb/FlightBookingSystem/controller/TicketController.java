@@ -17,10 +17,14 @@ import reactor.core.publisher.Mono;
 @RestController
 public class TicketController {
 
-    @Autowired
-    private TicketService ticketService;
+    private final TicketService ticketService;
 
-    @GetMapping("/ticket/{pnr}")
+    @Autowired
+    public TicketController(TicketService ticketService) {
+		this.ticketService = ticketService;
+	}
+
+	@GetMapping("/ticket/{pnr}")
     public Flux<TicketResponseDTO> getTickets(@PathVariable String pnr) {
         return ticketService.getTicketsByPnr(pnr);
     }

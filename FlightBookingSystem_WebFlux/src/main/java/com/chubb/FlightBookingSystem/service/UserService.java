@@ -12,9 +12,13 @@ import reactor.core.publisher.Mono;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    @Autowired
+    public UserService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+    
     public Mono<User> insertUser(User user) {
         return userRepository.existsByEmailId(user.getEmailId())
     		.flatMap(exists -> {
@@ -24,4 +28,5 @@ public class UserService {
                 return userRepository.save(user);
             });
     }
+
 }
