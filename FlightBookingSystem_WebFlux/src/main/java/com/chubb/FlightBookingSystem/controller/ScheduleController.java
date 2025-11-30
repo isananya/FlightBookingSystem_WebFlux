@@ -32,7 +32,7 @@ public class ScheduleController {
 		this.adminSecretKey = "Admin";
 	}
 
-	@PostMapping("/inventory/add")
+	@PostMapping("/inventory")
     public Mono<ResponseEntity<String>> saveSchedule(
             @RequestHeader(value = "Admin_key", required = false) String adminKey,
             @RequestBody @Valid ScheduleRequestDTO scheduleDto) {
@@ -45,7 +45,7 @@ public class ScheduleController {
                 .map(id -> ResponseEntity.status(HttpStatus.CREATED).body(id));
     }
 
-    @PostMapping("/route/add")
+    @PostMapping("/route")
     public Mono<ResponseEntity<String>> saveFlight(
             @RequestHeader(value = "Admin_key", required = false) String adminKey,
             @RequestBody @Valid FlightRequestDTO dto) {

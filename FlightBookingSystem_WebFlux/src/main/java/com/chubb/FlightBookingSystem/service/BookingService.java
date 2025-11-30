@@ -114,7 +114,7 @@ public class BookingService {
                     request.isRoundTrip(),
                     request.getDepartureScheduleId(),
                     request.getReturnScheduleId(),
-                    totalAmount,
+                    totalAmount*request.getPassengerCount(),
                     request.getEmailId(),
                     request.getPassengerCount()
                 );

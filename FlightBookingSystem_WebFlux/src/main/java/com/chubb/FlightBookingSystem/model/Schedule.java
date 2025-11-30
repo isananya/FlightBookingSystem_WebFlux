@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.chubb.FlightBookingSystem.dto.ScheduleRequestDTO;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class Schedule {
     @NotBlank
     private String airlineName;
     
+    @FutureOrPresent
     private LocalDate departureDate;
 
     private float basePrice;
